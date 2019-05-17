@@ -1,0 +1,117 @@
+:root{
+    --color-disabled: #bb8282;
+    --color-hover-blue: #3b3b61;
+}
+div.row.flex-center{
+    display: flex;
+    justify-content: center;
+    /* margin-top: 30px; */
+}
+
+/*titulo*/
+h1{
+    font-size: 2.8rem;
+    margin-top: 10px;
+    margin-bottom: 0;
+}
+
+/*form styles*/
+input.my-input, .select-wrapper input.select-dropdown{
+    height: 44px !important;
+    margin-bottom: 0 !important;
+}
+input.my-input[type]:disabled::placeholder{
+    color: var(--color-disabled);
+}
+div.my-form{
+    display: inline-block;
+}
+div.my-form > div{
+    width: 300px;
+    /* border: solid gray 1px; */
+    overflow: hidden;
+    height: 100%;
+}
+.my-form form .row{
+    margin-bottom: 0;
+}
+.input-field{
+    margin: 0;
+}
+.input-field label, span.helper-text{
+    display: none !important;
+}
+div.select-wrapper{
+    height: 100%;
+}
+input::placeholder, input.select-dropdown{
+    color: #444;
+}
+/*btn*/
+a.btn{
+    margin-top: 15px;
+    width: 100%;
+    background-color: blue;
+}
+a.btn:hover{
+    background-color: var(--color-hover-blue)
+}
+a.btn:disabled{
+    background-color: var(--color-disabled); 
+}
+/*fim form styles*/
+
+/*table styles*/
+div.my-table{
+    display: inline-block;
+}
+div.my-table > div{
+    width: 700px;
+    /* border: solid gray 1px; */
+    overflow-y: hidden;
+    overflow-x: scroll;
+    height: 100%;
+}
+th{ 
+    white-space: nowrap;
+}
+.my-table td,.my-table th{
+    text-align: center;
+    padding: 11px 5px;
+}
+
+/*utilitarios*/
+.h-100{
+    height: 100% !important;
+}
+
+/*pesonalização da barra de overflow*/
+::-webkit-scrollbar              { 
+    /* 1 */
+
+}
+::-webkit-scrollbar-button       { 
+    /* 2 */ 
+    
+}
+::-webkit-scrollbar-track        { 
+    /* 3 */
+
+}
+::-webkit-scrollbar-track-piece  { 
+    /* 4 */
+
+}
+::-webkit-scrollbar-thumb:horizontal        { 
+    /* 5 */
+    background: blue;
+    border-radius: 6px;
+}
+::-webkit-scrollbar-corner       {
+     /* 6 */
+    
+}
+::-webkit-resizer                {
+     /* 7 */ 
+    
+}
