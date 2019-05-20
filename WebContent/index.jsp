@@ -230,6 +230,7 @@
             var instances = M.FormSelect.init(elems, {});
         })
     </script>
+    <script src="assets/js/Main.js" ></script>
 </body>
 
 </html>

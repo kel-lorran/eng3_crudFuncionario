@@ -58,7 +58,7 @@ public class ControleFuncionario extends HttpServlet {
 		request.setAttribute("resultado", funcionarios);
 		
 		//RequestDispatcher rd= request.getRequestDispatcher("FormConsultaFuncionario.jsp");  		
-		RequestDispatcher rd= request.getRequestDispatcher("index.jsp");  
+		RequestDispatcher rd= request.getRequestDispatcher("tableResult.jsp");  
 		  
 		rd.forward(request, response);//method may be include or forward  
 	}
@@ -97,20 +97,28 @@ public class ControleFuncionario extends HttpServlet {
 	}
 
 	protected void doDelete(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-		String txtId = request.getParameter("txtId");
-		int id = 0;
-		
-		if( txtId != null){
-			if(isNumeric(txtId)){
-				id = Integer.parseInt(txtId);
-			}					
-		}
-		
-		Funcionario fu = new Funcionario(id, null);
-		
-		Fachada fachada = new Fachada();
-		
-		fachada.excluir(fu);	
+		 String txtId = request.getParameter("id");
+  		int id = 0;
+  		
+  		if( txtId != null){
+  			if(isNumeric(txtId)){
+  				id = Integer.parseInt(txtId);
+  			}					
+  		}
+  		
+  		Funcionario fu = new Funcionario(id, null);
+  		
+  		Fachada fachada = new Fachada();
+  		
+  		fachada.excluir(fu);
+  		
+
+          // Redireciona para a listagem com sendRedirect - evita o problema com o Reload (F5).
+
+			PrintWriter out = response.getWriter();
+			out.print("exclusão com sucesso");
+          return;
+
 		
 	}
 	
