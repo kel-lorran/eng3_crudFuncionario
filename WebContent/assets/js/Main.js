@@ -51,27 +51,43 @@ const ajax = (success, fail, operacao,data = null) => {
 			break
 	}
 	
-	fetch(...config).then( resp => resp.text()).then( data => success(data)).catch( fail);
+	fetch(...config).then( resp => resp.text()).then( data => success(data)).catch( error => fail(error));
 }
 
 const deletarFuncionario = (e) => {
-	debugger
-	//e.preventDefault();
-	alert('isso');
-//	let id = e.target.id.replace('funcionario-id-','');
-//	
-//	ajax(
-//			resp => console.log(resp),
-//			error => console.log( 'error:', error),
-//			'delete',id
-//	);
+
+	e.preventDefault();
+
+	let id = e.target.id.replace('funcionario-id-','');
+	
+	ajax(
+			resp => {
+				atualizaTabela();
+			},
+			error => console.log( 'error:', error),
+			'delete',id
+	);
 }
 
-ajax(
-		resp => document.getElementById('my-table-body').innerHTML = resp,
-		error => console.log( 'error:', error),
-		'getAll'
-);
+
+const atualizaTabela = () => {
+	ajax(
+			resp => {
+				document.getElementById('my-table-body').innerHTML = resp;
+				Object.assign([], document.getElementsByClassName('del-btn')).forEach( e => e.addEventListener( 'click', deletarFuncionario));
+			},
+			error => console.log( 'error:', error),
+			'getAll'
+	);	
+}
+
+const ligaBtns = () => {
+	let inputs = Object.assign([],document.querySelectorAll( `#my-form input`));
+	let algumPreenchido = inputs.filter( e => e.value !== 'Status:').map( e => e.value).reduce((a, e) => !!a || !!e);
+	
+	
+}
+atualizaTabela();
 
 
 

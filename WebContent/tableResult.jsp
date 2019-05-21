@@ -22,7 +22,7 @@
 														sbRegistro.append("<TR ALIGN='CENTER'>");
 														
 														sbRegistro.append("<TD>");
-														sbRegistro.append("<a href='#' class='del-btn' id='funcionario-id-"+p.getId()+"' onclick='e => console.log(e)'>deletar</a>");			
+														sbRegistro.append("<a href='#' class='del-btn' id='funcionario-id-"+p.getId()+"'>deletar</a>");			
 														sbRegistro.append("</TD>");
 								
 														sbRegistro.append("<TD>");
