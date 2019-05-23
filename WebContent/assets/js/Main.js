@@ -82,11 +82,49 @@ const atualizaTabela = () => {
 }
 
 const ligaBtns = () => {
+
 	let inputs = Object.assign([],document.querySelectorAll( `#my-form input`));
-	let algumPreenchido = inputs.filter( e => e.value !== 'Status:').map( e => e.value).reduce((a, e) => !!a || !!e);
+	let idPreenchido = !!inputs.shift().value;
+	let todosPreenchidos = !!(inputs.length == (inputs.filter( e => e.value || (e.value !== 'Status:')).length));
+	let algumPreenchido = !!inputs.filter( e => e.value !== 'Status:').map( e => e.value).reduce((a, e) => !!a || !!e);	
 	
+	const atualizaBtnCancel = (flag) => {
+		let btn = document.getElementById('btn-cancelar');
+		if( !!flag){
+			btn.removeAttribute('disabled');
+		}else{
+			btn.setAttribute('disabled',true);
+		}
+	}
 	
+	const atualizaBtnSaveOrUpdate = () => {
+		let btnSal = document.getElementById('btn-salvar');
+		let btnAtual = document.getElementById('btn-atualizar');
+		
+		if( idPreenchido && todosPreenchidos){
+			btnAtual.parentElement.classList.remove('hide');
+			btnSal.parentElement.classList.add('hide');
+			btnAtual.removeAttribute('disabled')
+		} else if( !idPreenchido && todosPreenchidos){
+			btnSal.parentElement.classList.remove('hide');
+			btnAtual.parentElement.classList.add('hide');
+			btnSal.removeAttribute('disabled')
+		} else if( idPreenchido && !todosPreenchidos){
+			btnAtual.parentElement.classList.remove('hide');
+			btnSal.parentElement.classList.add('hide');
+			btnAtual.setAttribute('disabled',true);
+		} else if( !idPreenchido && !todosPreenchidos){
+			btnSal.parentElement.classList.remove('hide');
+			btnAtual.parentElement.classList.add('hide');
+			btnSal.setAttribute('disabled',true);
+		}
+		
+	}
+	atualizaBtnCancel(algumPreenchido);
+	atualizaBtnSaveOrUpdate();
 }
+
+Object.assign([],document.querySelectorAll( `#my-form input`)).forEach( e => e.addEventListener( 'change', ligaBtns));
 atualizaTabela();
 
 
