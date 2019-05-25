@@ -39,7 +39,7 @@ const ajax = (success, fail, operacao,data = null) => {
 			break
 		case 'atualizar':
 			config = [
-				`${urlBase}/delalt?id=${data.id}`,
+				`${urlBase}/delalt?id=${data.txtId}`,
 				{
 					header: {
 						"Content-Type": "text/html; charset=utf-8"
@@ -51,7 +51,7 @@ const ajax = (success, fail, operacao,data = null) => {
 			break
 	}
 	
-	fetch(...config).then( resp => resp.text()).then( data => success(data)).catch( error => fail(error));
+	fetch(config[0],config[1]).then( resp => resp.text()).then( data => success(data)).catch( error => fail(error));
 }
 
 const deletarFuncionario = (e) => {
@@ -82,10 +82,9 @@ const atualizaTabela = () => {
 }
 
 const ligaBtns = () => {
-
 	let inputs = Object.assign([],document.querySelectorAll( `#my-form input`));
 	let idPreenchido = !!inputs.shift().value;
-	let todosPreenchidos = !!(inputs.length == (inputs.filter( e => e.value || (e.value !== 'Status:')).length));
+	let todosPreenchidos = !!(inputs.length == (inputs.filter( e => e.classList.contains('valid') || (e.value == 'Ativo') || (e.value == 'Inativo')).length));
 	let algumPreenchido = !!inputs.filter( e => e.value !== 'Status:').map( e => e.value).reduce((a, e) => !!a || !!e);	
 	
 	const atualizaBtnCancel = (flag) => {
@@ -124,7 +123,48 @@ const ligaBtns = () => {
 	atualizaBtnSaveOrUpdate();
 }
 
-Object.assign([],document.querySelectorAll( `#my-form input`)).forEach( e => e.addEventListener( 'change', ligaBtns));
+const enviaDados = (e) => {
+	debugger
+	e.preventDefault();
+	let inputs = Object.assign([],document.querySelectorAll( `#my-form input`));
+	let form = new FormData();
+	
+	if(! inputs[0].value){
+		inputs.forEach( e => form.append( e.name, e.value));
+		
+		ajax(
+				resp => {
+					atualizaTabela();
+					inputs.parentElement.reset();
+				},
+				error => console.log( 'error:', error),
+				'criar',form
+		);
+	} else {
+		inputs.forEach( e => form.append( e.name, e.value));
+		
+		ajax(
+				resp => {
+					atualizaTabela();
+					inputs.parentElement.reset();
+				},
+				error => console.log( 'error:', error),
+				'atualizar',form
+		);
+	}
+	
+}
+
+const actionBtns = (elem) =>{
+	if(! elem.target.hasAttribute('disabled')){
+		enviaDados(elem);
+	}
+}
+
+
+Object.assign([],document.querySelectorAll( `#my-form input`)).forEach( e => e.addEventListener( 'blur', ligaBtns));
+document.getElementById('btn-salvar').addEventListener( 'click', (e) => actionBtns(e));
+document.getElementById('btn-atualizar').addEventListener( 'click', (e) => actionBtns(e));
 atualizaTabela();
 
 
