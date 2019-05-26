@@ -19,10 +19,14 @@
 								
 														//	<a href="nome-do-lugar-a-ser-levado">descrição</a>
 								
-														sbRegistro.append("<TR ALIGN='CENTER'>");
+														sbRegistro.append("<TR ALIGN='CENTER' id='funcionario-id-"+p.getId()+"' >");
 														
 														sbRegistro.append("<TD>");
-														sbRegistro.append("<a href='#' class='del-btn' id='funcionario-id-"+p.getId()+"'>deletar</a>");			
+														sbRegistro.append("<a href='#' class='del-btn' data-func-id='"+p.getId()+"'><i class='fas fa-user-times' data-func-id='"+p.getId()+"' ></i></a>");			
+														sbRegistro.append("</TD>");
+														
+														sbRegistro.append("<TD>");
+														sbRegistro.append("<a href='#' class='edit-btn' data-func-id='"+p.getId()+"'><i class='fas fa-user-edit' data-func-id='"+p.getId()+"'></i></a>");			
 														sbRegistro.append("</TD>");
 								
 														sbRegistro.append("<TD>");

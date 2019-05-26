@@ -8,6 +8,7 @@ import java.util.List;
 
 import javax.servlet.RequestDispatcher;
 import javax.servlet.ServletException;
+import javax.servlet.annotation.MultipartConfig;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
@@ -18,6 +19,9 @@ import dao.IDAO;
 import dominio.EntidadeDominio;
 import dominio.Funcionario;
 import util.ConverteDate;
+
+import java.util.regex.Matcher; 
+import java.util.regex.Pattern;
 
 /**
  * Servlet implementation class ControleFuncionario
@@ -72,28 +76,62 @@ public class ControleFuncionario extends HttpServlet {
 	 * @see HttpServlet#doPost(HttpServletRequest request, HttpServletResponse response)
 	 */
 	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-		String txtStatus = request.getParameter("txtStatus");
-		String txtFuncionario = request.getParameter("txtFuncionario");
-		String txtMatricula = request.getParameter("txtMatricula");
-		String txtSetor = request.getParameter("txtSetor");
-		String txtRegional = request.getParameter("txtRegional");
-		String txtEmail = request.getParameter("txtEmail");
-		String txtCadastradoPor = request.getParameter("txtCadastradoPor");
-		String txtCPF = request.getParameter("txtCPF");
-		String txtCargo = request.getParameter("txtCargo");
-		Date txtDtContratacao = ConverteDate.converteStringDate(request.getParameter("txtDtContratacao"));
-		//Date txtDtContratacao = request.getParameter("txtDtContratacao");
+		String txtId = request.getParameter("txtId");
+		int id = 0;
+  		
+  		if( txtId != null){
+  			if(isNumeric(txtId)){
+  				id = Integer.parseInt(txtId);
+  			}					
+  		}
+  		
+  		if( id == 0) {
+  			
+  			String txtStatus = request.getParameter("txtStatus");
+  			String txtFuncionario = request.getParameter("txtFuncionario");
+  			String txtMatricula = request.getParameter("txtMatricula");
+  			String txtSetor = request.getParameter("txtSetor");
+  			//System.out.print(request.getContentLength());
+  			String txtRegional = request.getParameter("txtRegional");
+  			String txtEmail = request.getParameter("txtEmail");
+  			String txtCadastradoPor = request.getParameter("txtCadastradoPor");
+  			String txtCPF = request.getParameter("txtCPF");
+  			String txtCargo = request.getParameter("txtCargo");
+  			Date txtDtContratacao = ConverteDate.converteStringDate(request.getParameter("txtDtContratacao"));
+  			//Date txtDtContratacao = request.getParameter("txtDtContratacao");
+  			
+  			Funcionario fu = new Funcionario(txtStatus, txtFuncionario, txtMatricula, txtSetor, txtRegional, txtEmail,
+  					txtCadastradoPor, txtCPF, txtCargo, txtDtContratacao);
+  			fu.setDtCadastro(new Date());			
+  			
+  			Fachada fachada = new Fachada();
+  			
+  			String msg = fachada.salvar(fu);
+  			
+  			PrintWriter out = response.getWriter();
+  			out.print(msg);
+  		} else {
+  			String txtStatus = request.getParameter("txtStatus");
+  			String txtFuncionario = request.getParameter("txtFuncionario");
+  			String txtMatricula = request.getParameter("txtMatricula");
+  			String txtSetor = request.getParameter("txtSetor");
+  			String txtRegional = request.getParameter("txtRegional");
+  			String txtEmail = request.getParameter("txtEmail");
+  			String txtCadastradoPor = request.getParameter("txtCadastradoPor");
+  			String txtCPF = request.getParameter("txtCPF");
+  			String txtCargo = request.getParameter("txtCargo");
+  			Date txtDtContratacao = ConverteDate.converteStringDate(request.getParameter("txtDtContratacao"));
+  			//Date txtDtContratacao = request.getParameter("txtDtContratacao");
+  			
+  			Funcionario fu = new Funcionario(txtStatus, txtFuncionario, txtMatricula, txtSetor, txtRegional, txtEmail,
+  					txtCadastradoPor, txtCPF, txtCargo, txtDtContratacao);	
+  			fu.setId( id);
+  			
+  			Fachada fachada = new Fachada();
+  			
+  			fachada.alterar(fu);
+  		}
 		
-		Funcionario fu = new Funcionario(txtStatus, txtFuncionario, txtMatricula, txtSetor, txtRegional, txtEmail,
-				txtCadastradoPor, txtCPF, txtCargo, txtDtContratacao);
-		fu.setDtCadastro(new Date());			
-		
-		Fachada fachada = new Fachada();
-		
-		String msg = fachada.salvar(fu);
-		
-		PrintWriter out = response.getWriter();
-		out.print(msg);
 	}
 
 	protected void doDelete(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
@@ -123,25 +161,17 @@ public class ControleFuncionario extends HttpServlet {
 	}
 	
 	protected void doPut(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-		String txtStatus = request.getParameter("txtStatus");
-		String txtFuncionario = request.getParameter("txtFuncionario");
-		String txtMatricula = request.getParameter("txtMatricula");
-		String txtSetor = request.getParameter("txtSetor");
-		String txtRegional = request.getParameter("txtRegional");
-		String txtEmail = request.getParameter("txtEmail");
-		String txtCadastradoPor = request.getParameter("txtCadastradoPor");
-		String txtCPF = request.getParameter("txtCPF");
-		String txtCargo = request.getParameter("txtCargo");
-		Date txtDtContratacao = ConverteDate.converteStringDate(request.getParameter("txtDtContratacao"));
-		//Date txtDtContratacao = request.getParameter("txtDtContratacao");
 		
-		Funcionario fu = new Funcionario(txtStatus, txtFuncionario, txtMatricula, txtSetor, txtRegional, txtEmail,
-				txtCadastradoPor, txtCPF, txtCargo, txtDtContratacao);
-		fu.setDtCadastro(new Date());			
-		
-		Fachada fachada = new Fachada();
-		
-		fachada.alterar(fu);	
 		
 	}
+	
+	private int userIdByUrl(HttpServletRequest req) {
+		String pathInfo = req.getPathInfo();
+	      if (pathInfo.startsWith("/")) {
+	          pathInfo = pathInfo.substring(1);
+	      }
+	      return Integer.parseInt(pathInfo);
+		
+	}
+	
 	}

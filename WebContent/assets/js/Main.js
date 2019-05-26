@@ -1,6 +1,6 @@
 const ajax = (success, fail, operacao,data = null) => {
 	let config;
-	const urlBase = 'http://localhost:8080/cadFuncionario/';
+	const urlBase = 'http://localhost:8080/cadFuncionario';
 	
 	switch(operacao){
 		case 'getAll':
@@ -29,9 +29,9 @@ const ajax = (success, fail, operacao,data = null) => {
 			config = [
 				`${urlBase}/ControleFuncionario`,
 				{
-					header: {
-						"Content-Type": "text/html; charset=utf-8"
-					},
+					headers: new Headers({
+						"Content-Type": "application/x-www-form-urlencoded"
+					}),
 					method: 'POST',
 					body: data
 				}
@@ -39,11 +39,11 @@ const ajax = (success, fail, operacao,data = null) => {
 			break
 		case 'atualizar':
 			config = [
-				`${urlBase}/delalt?id=${data.txtId}`,
+				`${urlBase}/ControleFuncionario`,
 				{
-					header: {
-						"Content-Type": "text/html; charset=utf-8"
-					},
+					headers: new Headers({
+						"Content-Type": "application/x-www-form-urlencoded"
+					}),
 					method: 'POST',
 					body: data
 				}
@@ -51,14 +51,13 @@ const ajax = (success, fail, operacao,data = null) => {
 			break
 	}
 	
-	fetch(config[0],config[1]).then( resp => resp.text()).then( data => success(data)).catch( error => fail(error));
+	fetch(...config).then( resp => resp.text()).then( data => success(data)).catch( error => fail(error));
 }
 
 const deletarFuncionario = (e) => {
-
 	e.preventDefault();
 
-	let id = e.target.id.replace('funcionario-id-','');
+	let id = e.target.dataset.funcId;
 	
 	ajax(
 			resp => {
@@ -69,12 +68,32 @@ const deletarFuncionario = (e) => {
 	);
 }
 
+const editarFuncionario = (e) => {
+	e.preventDefault();
+
+	let id = e.target.dataset.funcId;
+	let tr = document.getElementById(`funcionario-id-${id}`);
+	let data = Object.assign([],tr.querySelectorAll(`td`)).filter( (e, i) => i > 1).map( e => e.textContent);
+	let inputs = Object.assign([],document.querySelectorAll( `#my-form input`));
+	inputs.forEach( ( e, i) => {
+		e.value = data[i];
+		e.classList.add('valid');
+		ligaBtns();
+	});
+}
+
+const limparForm = ( ) => {
+	document.querySelector('#my-form form').reset();
+	ligaBtns();
+}
+
 
 const atualizaTabela = () => {
 	ajax(
 			resp => {
 				document.getElementById('my-table-body').innerHTML = resp;
 				Object.assign([], document.getElementsByClassName('del-btn')).forEach( e => e.addEventListener( 'click', deletarFuncionario));
+				Object.assign([], document.getElementsByClassName('edit-btn')).forEach( e => e.addEventListener( 'click', editarFuncionario));
 			},
 			error => console.log( 'error:', error),
 			'getAll'
@@ -127,26 +146,35 @@ const enviaDados = (e) => {
 	debugger
 	e.preventDefault();
 	let inputs = Object.assign([],document.querySelectorAll( `#my-form input`));
-	let form = new FormData();
+	let form = '';
 	
 	if(! inputs[0].value){
-		inputs.forEach( e => form.append( e.name, e.value));
+		inputs.shift();
+		inputs.forEach( (e,i) => {
+			let name = e.name ? e.name : 'txtStatus';
+			form += i == 0 ? '' : '&';
+			form += `${encodeURIComponent(name)}=${encodeURIComponent(e.value)}`;
+		});
 		
 		ajax(
 				resp => {
 					atualizaTabela();
-					inputs.parentElement.reset();
+					limparForm()
 				},
 				error => console.log( 'error:', error),
 				'criar',form
 		);
 	} else {
-		inputs.forEach( e => form.append( e.name, e.value));
+		inputs.forEach( (e,i) => {
+			let name = e.name ? e.name : 'txtStatus';
+			form += i == 0 ? '' : '&';
+			form += `${encodeURIComponent(name)}=${encodeURIComponent(e.value)}`;
+		});
 		
 		ajax(
 				resp => {
 					atualizaTabela();
-					inputs.parentElement.reset();
+					limparForm()
 				},
 				error => console.log( 'error:', error),
 				'atualizar',form
@@ -165,6 +193,7 @@ const actionBtns = (elem) =>{
 Object.assign([],document.querySelectorAll( `#my-form input`)).forEach( e => e.addEventListener( 'blur', ligaBtns));
 document.getElementById('btn-salvar').addEventListener( 'click', (e) => actionBtns(e));
 document.getElementById('btn-atualizar').addEventListener( 'click', (e) => actionBtns(e));
+document.getElementById('btn-cancelar').addEventListener( 'click', (e) => limparForm());
 atualizaTabela();
 
 

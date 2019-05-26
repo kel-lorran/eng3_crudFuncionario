@@ -1,6 +1,8 @@
 package controle;
 
 import java.io.IOException;
+import java.util.Date;
+
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
@@ -8,6 +10,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import dominio.Funcionario;
+import util.ConverteDate;
 
 /**
  * Servlet implementation class delalt
@@ -50,6 +53,7 @@ public class delalt extends HttpServlet {
 
         try {
         	
+        	userIdByUrl(request);
         	 if (null != request.getParameter("acao")) {
                  // Se for ação de exclusão, exclui o registro do banco de dados.
                  if (request.getParameter("acao").equals("excluir")) {
@@ -72,6 +76,29 @@ public class delalt extends HttpServlet {
                      // Redireciona para a listagem com sendRedirect - evita o problema com o Reload (F5).
                      response.sendRedirect(request.getContextPath() + "/ControleFuncionario");
                      return;
+                 }else if (request.getParameter("acao").equals("editar")) {
+                	 int txtId = userIdByUrl(request);
+             		
+             		String txtStatus = request.getParameter("txtStatus");
+             		String txtFuncionario = request.getParameter("txtFuncionario");
+             		String txtMatricula = request.getParameter("txtMatricula");
+             		String txtSetor = request.getParameter("txtSetor");
+             		String txtRegional = request.getParameter("txtRegional");
+             		String txtEmail = request.getParameter("txtEmail");
+             		String txtCadastradoPor = request.getParameter("txtCadastradoPor");
+             		String txtCPF = request.getParameter("txtCPF");
+             		String txtCargo = request.getParameter("txtCargo");
+             		Date txtDtContratacao = ConverteDate.converteStringDate(request.getParameter("txtDtContratacao"));
+             		//Date txtDtContratacao = request.getParameter("txtDtContratacao");
+             		
+             		Funcionario fu = new Funcionario(txtStatus, txtFuncionario, txtMatricula, txtSetor, txtRegional, txtEmail,
+             				txtCadastradoPor, txtCPF, txtCargo, txtDtContratacao);
+             		fu.setDtCadastro(new Date());	
+             		fu.setId( txtId);
+             		
+             		Fachada fachada = new Fachada();
+             		
+             		fachada.alterar(fu);	
                  }
         	 }
             // Verificar se foi recebida alguma ação.
@@ -110,4 +137,13 @@ public class delalt extends HttpServlet {
     
 
 }
+	
+	private int userIdByUrl(HttpServletRequest req) {
+		String pathInfo = req.getPathInfo();
+	      if (pathInfo.startsWith("/")) {
+	          pathInfo = pathInfo.substring(1);
+	      }
+	      return Integer.parseInt(pathInfo);
+		
+	}
 }

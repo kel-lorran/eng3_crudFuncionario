@@ -19,6 +19,7 @@ h1{
 input.my-input, .select-wrapper input.select-dropdown{
     height: 44px !important;
     margin-bottom: 0 !important;
+    box-sizing: border-box !important;
 }
 input.my-input[type]:disabled::placeholder{
     color: var(--color-disabled);
