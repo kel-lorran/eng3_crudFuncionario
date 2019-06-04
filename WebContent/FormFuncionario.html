@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="ISO-8859-1">
+<title>:::: CADASTRO DE FUNCIONARIO::::</title>
+<style>
+
+	form input{
+		display: block;
+		
+		border: none;
+		border-bottom: solid black 1px;
+	}
+	
+	form select{
+		display: block;
+		margin: 30px;
+	}
+	
+	input[type="submit"]{
+		padding: 10px;
+		border: solid black 1px;
+	}
+</style>
+</head>
+<body>
+	<form action="ControleFuncionario" method="post">
+	
+		<label for="txtStatus" name="txtStatus">Status:</label>
+		<select id="txtStatus" name="txtStatus">
+			<option value="Ativo">ATIVO</option>
+			<option value="Inativo">INATIVO</option>
+		</select>	
+		
+		<label for="txtFuncionario">Nome:</label>
+		<input type="text" id="txtFuncionario" name="txtFuncionario"/>
+		<br />
+		
+		<label for="txtMatricula">Matricula:</label>
+		<input type="text" id="txtMatricula" name="txtMatricula"/>
+		<br />
+		
+		<label for="txtSetor">Setor:</label>
+		<input type="text" id="txtSetor" name="txtSetor"/>
+		<br />
+		
+		<label for="txtRegional">Regional:</label>
+		<input type="text" id="txtRegional" name="txtRegional"/>
+		<br />	
+		
+		<label for="txtEmail">Email:</label>
+		<input type="text" id="txtEmail" name="txtEmail"/>
+		<br />
+		
+		<label for="txtCadastradoPor">Cadastrado Por:</label>
+		<input type="text" id="txtCadastradoPor" name="txtCadastradoPor"/>
+		<br />
+		
+		<label for="txtCPF">CPF:</label>
+		<input type="text" id="txtCPF" name="txtCPF"/>
+		<br />
+		
+		<label for="txtCargo">Cargo:</label>
+		<input type="text" id="txtCargo" name="txtCargo"/>
+		<br />
+		
+		<label for="txtDtContratacao">Data de contratação:</label>
+		<input type="text" id="txtDtContratacao" name="txtDtContratacao"/>
+		<br />
+		
+		<input type="submit" id="operacao" name="operacao" value="SALVAR_FUNCIONARIO"/>
+<!-- 		<input type="submit" id="operacao" name="operacao" value="EXCLUIR_FUNCIONARIO"/> -->
+	
+	</form>
+</body>
+</html>

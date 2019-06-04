@@ -1,6 +1,6 @@
 const ajax = (success, fail, operacao,data = null) => {
 	let config;
-	const urlBase = 'http://localhost:8080/cadFuncionario';
+	const urlBase = 'http://localhost:8080/CadFunc';
 	
 	switch(operacao){
 		case 'getAll':

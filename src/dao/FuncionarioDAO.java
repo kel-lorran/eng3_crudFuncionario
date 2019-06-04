@@ -124,8 +124,8 @@ public class FuncionarioDAO implements IDAO{
 			pst.setString(7, funcionario.getCadastradoPor());
 			pst.setString(8, funcionario.getCpf());
 			pst.setString(9, funcionario.getCargo());
-			pst.setDate(10, (Date)funcionario.getDtContratacao());
-			//pst.setTimestamp(11, new Timestamp(funcionario.getDtContratacao().getTime()));
+			//pst.setDate(10, (Date)funcionario.getDtContratacao());
+			pst.setTimestamp(10, new Timestamp(funcionario.getDtContratacao().getTime()));
 			pst.setInt(11, funcionario.getId());
 			pst.executeUpdate();
 			//System.out.println(pst.toString());
