@@ -69,6 +69,10 @@ public class Funcionario extends EntidadeDominio {
 		this.nome = nome2;
 	}
 
+	public Funcionario() {
+		// TODO Auto-generated constructor stub
+	}
+
 	public String getStatus() {
 		return status;
 	}
