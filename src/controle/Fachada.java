@@ -4,7 +4,6 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-
 import Strategy.IStrategy;
 import Strategy.ValidarDadosFuncionario;
 import Strategy.ValidarFuncionario;
@@ -44,7 +43,7 @@ public class Fachada implements IFachada {
 		salvarFuncionario.add(vlForm);
 		salvarFuncionario.add(vlFunc);
 		
-		Map<String,List<IStrategy>> rnsFuncionario = HashMap<String,List<IStrategy>>();
+		Map<String,List<IStrategy>> rnsFuncionario = new HashMap<String,List<IStrategy>>();
 		rnsFuncionario.put("SALVAR",salvarFuncionario);
 		
 		/*
@@ -70,29 +69,7 @@ public class Fachada implements IFachada {
 		
 		daos.put(Funcionario.class.getName(), new FuncionarioDAO());
 	}
-	
-
-	public String alterar(EntidadeDominio entidade) {
-		IDAO dao = new FuncionarioDAO();
-		dao.alterar(entidade);
 		
-		
-		
-		return null;
-	}
-
-	public String excluir(EntidadeDominio entidade) {	
-		IDAO dao = new FuncionarioDAO();
-		dao.excluir(entidade);
-		
-		return null;
-	}
-
-	public List<EntidadeDominio> consultar(EntidadeDominio entidade) {
-		// TODO Auto-generated method stub
-		return null;
-	}
-	
 	private void validaNull(StringBuilder sb, String msg){
 		if(msg != null){
 			sb.append(msg);
@@ -101,26 +78,118 @@ public class Fachada implements IFachada {
 
 	@Override
 	public Result salvar(EntidadeDominio entidade) {
-		// TODO Auto-generated method stub
-		return null;
+		
+		sb.setLength(0);
+		resultado = new Result();
+		String classe = entidade.getClass().getName();
+		
+		Map<String,List<IStrategy>> rn = regras.get(classe);
+		
+		List<IStrategy> rns = rn.get("SALVAR");
+		if(rns!=null) {
+			for (IStrategy strategies :rns) {
+				String msg= strategies.processar(entidade);
+				if (msg!=null) {
+					sb.append(msg + "\n");
+				}
+			}
+		}
+		
+		if(sb.length() !=0) {
+			resultado.setMensagem(sb.toString());
+		}else {
+			daos.get(classe).salvar(entidade);
+			
+		}
+		resultado.addEntidades(entidade);
+		
+		return resultado;
 	}
 
 	@Override
 	public Result alterar(EntidadeDominio entidade) {
-		// TODO Auto-generated method stub
-		return null;
+		sb.setLength(0);
+		resultado = new Result();
+		String classe = entidade.getClass().getName();
+		
+		Map<String,List<IStrategy>> rn = regras.get(classe);
+		
+		
+		List<IStrategy> rns = rn.get("ALTERAR");
+		if(rns!=null) {
+			
+			for (IStrategy strategies :rns) {
+				String msg = strategies.processar(entidade);
+				if (msg!=null) {
+					sb.append(msg + "\n");
+				}
+			}
+		}
+		if (sb.length() !=0) {
+			resultado.setMensagem(sb.toString());
+		} else {
+			daos.get(classe).alterar(entidade);
+
+		}
+		resultado.addEntidades(entidade);
+
+		return resultado;
 	}
 
 	@Override
 	public Result consultar(EntidadeDominio entidade) {
-		// TODO Auto-generated method stub
-		return null;
+		sb.setLength(0);
+		resultado = new Result();
+		String classe = entidade.getClass().getName();
+		
+		Map<String,List<IStrategy>> rn = regras.get(classe);
+		
+		
+		if(rn.get("CONSULTAR")!=null) {
+			List<IStrategy> rns = rn.get("CONSULTAR");
+				
+			for (IStrategy strategies :rns) {
+				String msg= strategies.processar(entidade);
+				if (msg!=null) {
+					sb.append(msg);
+				}
+			}
+		}	
+		
+		
+		if (sb.length() !=0) {
+			resultado.setMensagem(sb.toString());
+		} else {
+			List<EntidadeDominio> lista= daos.get(classe).consultar(entidade);
+			if (lista == null) {
+				resultado.setMensagem("Sem retorno");
+			} else {
+				for (int i = 0 ; i<lista.size();i++) {
+					resultado.addEntidades(lista.get(i));
+				}
+				
+			}
+
+		}
+		
+		return resultado;
+
 	}
 
 	@Override
 	public Result apagar(EntidadeDominio entidade) {
-		// TODO Auto-generated method stub
-		return null;
+		resultado = new Result();
+		String classe = entidade.getClass().getName();
+
+		if (sb.length() !=0) {
+			resultado.setMensagem(sb.toString());
+		} else {
+			daos.get(classe).excluir(entidade);
+
+		}
+		resultado.addEntidades(entidade);
+		return resultado;
+
 	}
 
 }

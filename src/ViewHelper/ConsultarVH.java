@@ -48,12 +48,13 @@ public class ConsultarVH implements IViewHelper {
   			Funcionario fu = new Funcionario(txtStatus, txtFuncionario, txtMatricula, txtSetor, txtRegional, txtEmail,
   					txtCadastradoPor, txtCPF, txtCargo, txtDtContratacao);
   			fu.setDtCadastro(new Date());
+  			return fu;
   		} else {
   			Funcionario funcionario = new Funcionario();
 			funcionario.setId(id);
 			return funcionario;
 		}
-		return null;
+		//return null;
 	}
 
 	@Override
@@ -61,7 +62,8 @@ public class ConsultarVH implements IViewHelper {
 		// TODO Auto-generated method stub
 		if(resultado.getMensagem()==null) {
 			if(resultado.getEntidades().size()==1) {
-				EntidadeDominio entidade = resultado.getEntidades().get(0);
+				List<EntidadeDominio> entidade = new ArrayList<EntidadeDominio>();
+				entidade.add( resultado.getEntidades().get(0));
 				request.setAttribute("resultado", entidade);
 				
 			}else {

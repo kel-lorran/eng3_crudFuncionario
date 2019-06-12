@@ -70,7 +70,7 @@ public class delalt extends HttpServlet {
              		
              		Fachada fachada = new Fachada();
              		
-             		fachada.excluir(fu);
+             		fachada.apagar(fu);
              		
 
                      // Redireciona para a listagem com sendRedirect - evita o problema com o Reload (F5).

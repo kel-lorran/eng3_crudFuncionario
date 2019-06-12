@@ -4,7 +4,7 @@
 <%@ page
 	import="dominio.*, java.util.*"%>
 	<%
-		List<EntidadeDominio> entidades = (List<EntidadeDominio>) request.getAttribute("resultado");
+		List<EntidadeDominio> entidades = (List<EntidadeDominio>) request.getAttribute("listagem");
 	%>
 	
                             <% 
@@ -65,7 +65,7 @@
 														sbRegistro.append(p.getCpf());			
 														sbRegistro.append("</TD>");
 														
-														sbRegistro.append("<TD>");
+														sbRegistro.append("<TD class='type-date'>");
 														sbRegistro.append(p.getDtCadastro());			
 														sbRegistro.append("</TD>");
 														
@@ -73,7 +73,7 @@
 														sbRegistro.append(p.getCargo());			
 														sbRegistro.append("</TD>");
 														
-														sbRegistro.append("<TD>");
+														sbRegistro.append("<TD class='type-date'>");
 														sbRegistro.append(p.getDtContratacao());			
 														sbRegistro.append("</TD>");				
 								

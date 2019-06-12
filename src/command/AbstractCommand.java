@@ -1,6 +1,6 @@
 package command;
 
-import fachada.Fachada;
+import controle.Fachada;
 
 public abstract class AbstractCommand implements ICommand {
 

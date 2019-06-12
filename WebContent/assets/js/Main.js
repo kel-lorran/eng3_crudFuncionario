@@ -1,11 +1,11 @@
 const ajax = (success, fail, operacao,data = null) => {
 	let config;
-	const urlBase = 'http://localhost:8080/CadFunc';
+	const urlBase = 'http://localhost:8080/CadFunc/ControleFuncionario';
 	
 	switch(operacao){
 		case 'getAll':
 			config = [
-				`${urlBase}/ControleFuncionario`,
+				`${urlBase}?OPERACAO=CONSULTAR&ROTA=consultarDados`,
 				{
 					header: {
 						"Content-Type": "text/html; charset=utf-8"
@@ -16,7 +16,7 @@ const ajax = (success, fail, operacao,data = null) => {
 			break;
 		case 'delete':
 			config = [
-				`${urlBase}/delalt?acao=excluir&id=${data}`,
+				`${urlBase}?OPERACAO=APAGAR&id=${data}&ROTA=excluirDados`,
 				{
 					header: {
 						"Content-Type": "text/html; charset=utf-8"
@@ -27,25 +27,25 @@ const ajax = (success, fail, operacao,data = null) => {
 			break;
 		case 'criar':
 			config = [
-				`${urlBase}/ControleFuncionario`,
+				`${urlBase}`,
 				{
 					headers: new Headers({
 						"Content-Type": "application/x-www-form-urlencoded"
 					}),
 					method: 'POST',
-					body: data
+					body: (data + '&OPERACAO=SALVAR&ROTA=salvar-funcionario')
 				}
 			];
 			break
 		case 'atualizar':
 			config = [
-				`${urlBase}/ControleFuncionario`,
+				`${urlBase}`,
 				{
 					headers: new Headers({
 						"Content-Type": "application/x-www-form-urlencoded"
 					}),
 					method: 'POST',
-					body: data
+					body: (data + '&OPERACAO=ALTERAR&ROTA=alterarDados')
 				}
 			];
 			break
@@ -92,6 +92,7 @@ const atualizaTabela = () => {
 	ajax(
 			resp => {
 				document.getElementById('my-table-body').innerHTML = resp;
+				Object.assign([], document.querySelectorAll('td.type-date')).forEach( e => e.textContent = e.textContent.replace(/-/g,'/') );
 				Object.assign([], document.getElementsByClassName('del-btn')).forEach( e => e.addEventListener( 'click', deletarFuncionario));
 				Object.assign([], document.getElementsByClassName('edit-btn')).forEach( e => e.addEventListener( 'click', editarFuncionario));
 			},
@@ -101,8 +102,9 @@ const atualizaTabela = () => {
 }
 
 const ligaBtns = () => {
-	let inputs = Object.assign([],document.querySelectorAll( `#my-form input`));
-	let idPreenchido = !!inputs.shift().value;
+	let todosInputs = Object.assign([],document.querySelectorAll( `#my-form input`));
+	let idPreenchido = !!todosInputs.shift().value;
+	let inputs = todosInputs.filter( e => !e.getAttribute('disabled'));
 	let todosPreenchidos = !!(inputs.length == (inputs.filter( e => e.classList.contains('valid') || (e.value == 'Ativo') || (e.value == 'Inativo')).length));
 	let algumPreenchido = !!inputs.filter( e => e.value !== 'Status:').map( e => e.value).reduce((a, e) => !!a || !!e);	
 	

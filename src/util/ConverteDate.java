@@ -21,7 +21,7 @@ public class ConverteDate {
 
 	        Date date = null;  
 	        try {  
-	            DateFormat formatter = new SimpleDateFormat("dd/MM/yyyy");  
+	            DateFormat formatter = new SimpleDateFormat("yyyy/MM/dd");  
 	            date = (java.util.Date)formatter.parse(data);  
 	            return date;
 	        } catch (ParseException e) {              
