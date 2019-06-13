@@ -42,12 +42,12 @@ public class ConsultarVH implements IViewHelper {
   			String txtCadastradoPor = request.getParameter("txtCadastradoPor");
   			String txtCPF = request.getParameter("txtCPF");
   			String txtCargo = request.getParameter("txtCargo");
-  			Date txtDtContratacao = ConverteDate.converteStringDate(request.getParameter("txtDtContratacao"));
+  			Date txtDtContratacao = request.getParameter("txtDtContratacao") != null ? ConverteDate.converteStringDate(request.getParameter("txtDtContratacao")) : null;
   			//Date txtDtContratacao = request.getParameter("txtDtContratacao");
   			
   			Funcionario fu = new Funcionario(txtStatus, txtFuncionario, txtMatricula, txtSetor, txtRegional, txtEmail,
   					txtCadastradoPor, txtCPF, txtCargo, txtDtContratacao);
-  			fu.setDtCadastro(new Date());
+  			fu.setDtCadastro(request.getParameter("txtDtCadastro") != null ? ConverteDate.converteStringDate(request.getParameter("txtDtContratacao")) : null);
   			return fu;
   		} else {
   			Funcionario funcionario = new Funcionario();
@@ -64,7 +64,7 @@ public class ConsultarVH implements IViewHelper {
 			if(resultado.getEntidades().size()==1) {
 				List<EntidadeDominio> entidade = new ArrayList<EntidadeDominio>();
 				entidade.add( resultado.getEntidades().get(0));
-				request.setAttribute("resultado", entidade);
+				request.setAttribute("listagem", entidade);
 				
 			}else {
 				List<EntidadeDominio> entidade = new ArrayList<EntidadeDominio>();

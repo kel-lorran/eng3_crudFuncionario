@@ -14,6 +14,17 @@ const ajax = (success, fail, operacao,data = null) => {
 				}
 			];
 			break;
+		case 'getAny':
+			config = [
+				`${urlBase}?OPERACAO=CONSULTAR&ROTA=consultarDados&${data}`,
+				{
+					header: {
+						"Content-Type": "text/html; charset=utf-8"
+					},
+					method: 'GET'
+				}
+			];
+			break;
 		case 'delete':
 			config = [
 				`${urlBase}?OPERACAO=APAGAR&id=${data}&ROTA=excluirDados`,
@@ -120,24 +131,30 @@ const ligaBtns = () => {
 	const atualizaBtnSaveOrUpdate = () => {
 		let btnSal = document.getElementById('btn-salvar');
 		let btnAtual = document.getElementById('btn-atualizar');
+		let btnBusc = document.getElementById('btn-consultar');
 		
 		if( idPreenchido && todosPreenchidos){
+			btnBusc.parentElement.classList.add('hide');
 			btnAtual.parentElement.classList.remove('hide');
 			btnSal.parentElement.classList.add('hide');
 			btnAtual.removeAttribute('disabled')
 		} else if( !idPreenchido && todosPreenchidos){
+			btnBusc.parentElement.classList.add('hide');
 			btnSal.parentElement.classList.remove('hide');
 			btnAtual.parentElement.classList.add('hide');
 			btnSal.removeAttribute('disabled')
 		} else if( idPreenchido && !todosPreenchidos){
-			btnAtual.parentElement.classList.remove('hide');
-			btnSal.parentElement.classList.add('hide');
-			btnAtual.setAttribute('disabled',true);
-		} else if( !idPreenchido && !todosPreenchidos){
-			btnSal.parentElement.classList.remove('hide');
+			btnBusc.parentElement.classList.remove('hide');
 			btnAtual.parentElement.classList.add('hide');
-			btnSal.setAttribute('disabled',true);
+			btnSal.parentElement.classList.add('hide');
+			btnBusc.removeAttribute('disabled');
+		} else if( !idPreenchido && !todosPreenchidos){
+			btnBusc.parentElement.classList.remove('hide');
+			btnSal.parentElement.classList.add('hide');
+			btnAtual.parentElement.classList.add('hide');
+			btnBusc.removeAttribute('disabled');
 		}
+		
 		
 	}
 	atualizaBtnCancel(algumPreenchido);
@@ -191,11 +208,40 @@ const actionBtns = (elem) =>{
 	}
 }
 
+const actionBtns2 = (elem) =>{
+	if(! elem.target.hasAttribute('disabled')){
+		consultaDados(elem);
+	}
+}
+
+const consultaDados = (e) =>{
+	e.preventDefault();
+	let inputs = Object.assign([],document.querySelectorAll( `#my-form input`)).filter( e => e.classList.contains('valid') || (e.value == 'Ativo') || (e.value == 'Inativo'));
+	let form = '';
+
+	inputs.forEach( (e,i) => {
+		let name = e.name ? e.name : 'txtStatus';
+		form += i == 0 ? '' : '&';
+		form += `${encodeURIComponent(name)}=${encodeURIComponent(e.value)}`;
+	});
+	
+	ajax(
+			resp => {
+				document.getElementById('my-table-body').innerHTML = resp;
+				Object.assign([], document.querySelectorAll('td.type-date')).forEach( e => e.textContent = e.textContent.replace(/-/g,'/') );
+				Object.assign([], document.getElementsByClassName('del-btn')).forEach( e => e.addEventListener( 'click', deletarFuncionario));
+				Object.assign([], document.getElementsByClassName('edit-btn')).forEach( e => e.addEventListener( 'click', editarFuncionario));
+			},
+			error => console.log( 'error:', error),
+			'getAny',form
+	);
+}
 
 Object.assign([],document.querySelectorAll( `#my-form input`)).forEach( e => e.addEventListener( 'blur', ligaBtns));
 document.getElementById('btn-salvar').addEventListener( 'click', (e) => actionBtns(e));
 document.getElementById('btn-atualizar').addEventListener( 'click', (e) => actionBtns(e));
 document.getElementById('btn-cancelar').addEventListener( 'click', (e) => limparForm());
+document.getElementById('btn-consultar').addEventListener( 'click', (e) => actionBtns2(e));
 atualizaTabela();
 
 

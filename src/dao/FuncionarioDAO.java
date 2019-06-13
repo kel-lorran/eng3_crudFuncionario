@@ -288,38 +288,93 @@ public class FuncionarioDAO implements IDAO{
 
 	public List<EntidadeDominio> consultar(EntidadeDominio entidade) {
 		PreparedStatement pst = null;
-
 		Funcionario filtroFuncionario = (Funcionario) entidade;
-
-		if (filtroFuncionario.getNome() == null) {
-			filtroFuncionario.setNome("");
-		}
 		StringBuilder sql = new StringBuilder();
-
 		sql.append("SELECT * ");
 		sql.append(" FROM funcionarios ");
 
-		if(filtroFuncionario.getId() != 0 || !filtroFuncionario.getNome().equals("")) {
-			sql.append("WHERE ");
+		
+		String[] fields = new String[12];
+		boolean flagAlgumpreenchido = false;
+		
+		
+		if( filtroFuncionario.getId() != 0) {
+			fields[0] = "id = "+filtroFuncionario.getId();
+			flagAlgumpreenchido = true;
 		}
-		if (filtroFuncionario.getId() != 0 && filtroFuncionario.getNome().equals("")) {
-			sql.append("id =? ");
-		}else if (filtroFuncionario.getId() == 0
-				&& !filtroFuncionario.getNome().equals("")) {
-			sql.append("nome like ?");
+		if( filtroFuncionario.getStatus() != null) {
+			fields[1] = "status = '"+filtroFuncionario.getStatus()+"'";
+			flagAlgumpreenchido = true;
 		}
+		if( filtroFuncionario.getNome() != null) {
+			fields[2] = "nome like '%"+filtroFuncionario.getNome()+"%'";
+			flagAlgumpreenchido = true;
+		}
+		if( filtroFuncionario.getMatricula() != null) {
+			fields[3] = "matricula = '"+filtroFuncionario.getMatricula()+"'";
+			flagAlgumpreenchido = true;
+		}
+		if( filtroFuncionario.getSetor() != null) {
+			fields[4] = "setor = '"+filtroFuncionario.getSetor()+"'";
+			flagAlgumpreenchido = true;
+		}
+		if( filtroFuncionario.getRegional() != null) {
+			fields[5] = "regional = '"+filtroFuncionario.getRegional()+"'";
+			flagAlgumpreenchido = true;
+		}
+		if( filtroFuncionario.getEmail() != null) {
+			fields[6] = "email like '%"+filtroFuncionario.getEmail()+"%'";
+			flagAlgumpreenchido = true;
+		}
+		if( filtroFuncionario.getCadastradoPor() != null) {
+			fields[7] = "cadastradoPor like '%"+filtroFuncionario.getCadastradoPor()+"%'";
+			flagAlgumpreenchido = true;
+		}
+		if( filtroFuncionario.getCpf() != null) {
+			fields[8] = "cpf = '"+filtroFuncionario.getCpf()+"'";
+			flagAlgumpreenchido = true;
+		}
+		if( filtroFuncionario.getDtCadastro() != null) {
+			fields[9] = "dt_cadastro = '"+filtroFuncionario.getDtCadastro()+"'";
+			flagAlgumpreenchido = true;
+		}
+		if( filtroFuncionario.getCargo() != null) {
+			fields[10] = "cargo = '"+filtroFuncionario.getCargo()+"'";
+			flagAlgumpreenchido = true;
+		}
+		if( filtroFuncionario.getDtContratacao() != null) {
+			fields[11] = "dt_contratacao = '"+filtroFuncionario.getDtContratacao()+"'";
+			flagAlgumpreenchido = true;
+		}
+
+
+		
 
 		try {
 			conecta();
-			pst = con.prepareStatement(sql.toString());
-
-			if (filtroFuncionario.getId() != 0
-					&& filtroFuncionario.getNome().equals("")) {
-				pst.setInt(1, filtroFuncionario.getId());
-			} else if (filtroFuncionario.getId() == 0
-					&& !filtroFuncionario.getNome().equals("")) {
-				pst.setString(1, "%" + filtroFuncionario.getNome() + "%");
+			
+			if(flagAlgumpreenchido == true) {
+				sql.append(" WHERE ");
+				
+				if( fields[0] != null) {
+					sql.append(fields[0]);
+				}else {
+					boolean flagIsNotFirstTime = false;
+					for( int i = 1; i < fields.length; i++) {
+						if( fields[i] != null) {
+							if( flagIsNotFirstTime) {
+								sql.append(" OR ");
+							}		
+							flagIsNotFirstTime = true;
+							sql.append(fields[i]);
+						}
+					}
+				}
+				
+						
 			}
+			System.out.println(sql.toString());
+			pst = con.prepareStatement(sql.toString());
 
 			ResultSet rs = pst.executeQuery();
 			List<EntidadeDominio> liFunc = new ArrayList<EntidadeDominio>();
