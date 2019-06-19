@@ -5,6 +5,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import Strategy.IStrategy;
+import Strategy.ValidadorCpf;
 import Strategy.ValidarDadosFuncionario;
 import Strategy.ValidarFuncionario;
 import dao.FuncionarioDAO;
@@ -33,7 +34,7 @@ public class Fachada implements IFachada {
 
 		ValidarFuncionario vlForm = new ValidarFuncionario();
 		ValidarDadosFuncionario vlFunc = new ValidarDadosFuncionario();
-		
+		ValidadorCpf vCpf = new ValidadorCpf();
 		/*
 		 * criar e adicionar uma lista de Strategy para salvar
 		 */
@@ -42,6 +43,7 @@ public class Fachada implements IFachada {
 		
 		salvarFuncionario.add(vlForm);
 		salvarFuncionario.add(vlFunc);
+		salvarFuncionario.add(vCpf);
 		
 		Map<String,List<IStrategy>> rnsFuncionario = new HashMap<String,List<IStrategy>>();
 		rnsFuncionario.put("SALVAR",salvarFuncionario);
@@ -62,6 +64,7 @@ public class Fachada implements IFachada {
 		
 		alterarFuncionario.add(vlForm);
 		alterarFuncionario.add(vlFunc);
+		alterarFuncionario.add(vCpf);
 		
 		rnsFuncionario.put("ALTERAR",alterarFuncionario);
 		
